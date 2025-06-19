@@ -12,7 +12,7 @@ public class LocationStore implements LocationStoreInterface {
     @Override
     public int addLocation(final String locationName) {
         this.locations.put(locationName, null);
-        return -1;
+        return 0;
     }
 
     @Override
