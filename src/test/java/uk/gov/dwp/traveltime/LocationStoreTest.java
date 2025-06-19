@@ -25,4 +25,11 @@ public class LocationStoreTest {
         locations = new LocationStore(repository);
         assertEquals(0,locations.addLocation("testSite"));
     }
+
+    @Test
+    public void addLocationReturnsNegativeOneOnFailure() {
+        Map<String, String> repository = new HashMap<>();
+        locations = new LocationStore(repository);
+        assertEquals(-1,locations.addLocation(null));
+    }
 }

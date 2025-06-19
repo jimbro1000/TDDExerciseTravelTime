@@ -11,6 +11,9 @@ public class LocationStore implements LocationStoreInterface {
 
     @Override
     public int addLocation(final String locationName) {
+        if (locationName == null) {
+            return -1;
+        }
         this.locations.put(locationName, null);
         return 0;
     }
