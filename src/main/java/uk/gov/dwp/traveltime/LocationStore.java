@@ -1,8 +1,17 @@
 package uk.gov.dwp.traveltime;
 
+import java.util.Map;
+
 public class LocationStore implements LocationStoreInterface {
+    private final Map<String, String> locations;
+
+    public LocationStore(final Map<String, String> repository) {
+        this.locations = repository;
+    }
+
     @Override
-    public int addLocation(final String LocationName) {
+    public int addLocation(final String locationName) {
+        this.locations.put(locationName, null);
         return -1;
     }
 
