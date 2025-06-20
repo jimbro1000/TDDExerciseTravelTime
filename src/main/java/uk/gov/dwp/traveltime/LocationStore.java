@@ -1,12 +1,16 @@
 package uk.gov.dwp.traveltime;
 
 import java.util.Map;
+import java.util.Set;
 
 public class LocationStore implements LocationStoreInterface {
-    private final Map<String, String> locations;
+    private final Map<String, String> routes;
+    public final Set<String> locations;
 
-    public LocationStore(final Map<String, String> repository) {
-        this.locations = repository;
+    public LocationStore(final Set<String> locationRepository,
+                         final Map<String, String> routeRepository) {
+        this.locations = locationRepository;
+        this.routes = routeRepository;
     }
 
     @Override
@@ -14,13 +18,13 @@ public class LocationStore implements LocationStoreInterface {
         if (locationName == null) {
             return -1;
         }
-        this.locations.put(locationName, null);
+        this.locations.add(locationName);
         return 0;
     }
 
     @Override
     public boolean hasLocation(final String LocationName) {
-        return false;
+        return locations.contains(LocationName);
     }
 
     @Override
