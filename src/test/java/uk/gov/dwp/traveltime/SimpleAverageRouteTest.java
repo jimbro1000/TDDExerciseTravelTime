@@ -1,16 +1,28 @@
 package uk.gov.dwp.traveltime;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SimpleAverageRouteTest {
     public RouteTimeInterface averageRoute;
 
-    @Test
-    public void itReturnsMinusOneIfGivenAnInvalidTime() {
+    @ParameterizedTest
+    @CsvSource(
+            value = {"not a time", "ab:34", "12:34:56"}
+    )
+    public void itReturnsMinusOneIfGivenAnInvalidTime(String sample) {
         averageRoute = new SimpleAverageRoute();
-        int result = averageRoute.addSample("not a time");
+        int result = averageRoute.addSample(sample);
+        assertEquals(-1,result);
+    }
+
+    @Test
+    public void itReturnsMinusOneIfGivenAnEmptyString() {
+        averageRoute = new SimpleAverageRoute();
+        int result = averageRoute.addSample("");
         assertEquals(-1,result);
     }
 
@@ -25,5 +37,19 @@ public class SimpleAverageRouteTest {
     public void getAverageReturnsZeroIfThereAreNoSamples() {
         averageRoute = new SimpleAverageRoute();
         assertEquals("00:00", averageRoute.getAverage());
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+            value = {"04:00/04:00"},
+            delimiter = '/'
+    )
+    public void getAverageReturnsTheSimpleMeanOfAllSamples(String sampleList, String expected) {
+        averageRoute = new SimpleAverageRoute();
+        String[] samples = sampleList.split(",");
+        for (String sample : samples) {
+            averageRoute.addSample(sample);
+        }
+        assertEquals(expected, averageRoute.getAverage());
     }
 }

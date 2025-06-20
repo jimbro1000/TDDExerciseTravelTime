@@ -14,6 +14,9 @@ public class SimpleAverageRoute implements RouteTimeInterface {
     private int ingestTime(String time) {
         String[] parts = time.split(":");
         int result = 0;
+        if (parts.length > 2 || parts.length == 0) {
+            return -1;
+        }
         try {
             for (int i = 0; i < parts.length; ++i) {
                 Integer.parseInt(parts[i]);
