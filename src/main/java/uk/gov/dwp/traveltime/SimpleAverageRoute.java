@@ -1,13 +1,24 @@
 package uk.gov.dwp.traveltime;
 
 public class SimpleAverageRoute implements RouteTimeInterface {
+    private int sampleSum = 0;
+    private int sampleCount = 0;
+
     @Override
     public int addSample(String elapsedTime) {
-        return ingestTime(elapsedTime);
+         int time = ingestTime(elapsedTime);
+         if (time < 0) return time;
+         this.sampleSum += time;
+         this.sampleCount++;
+         return 0;
     }
 
     @Override
     public String getAverage() {
+        if (sampleCount > 0) {
+            int average = sampleSum / sampleCount;
+            return intToTime(average);
+        }
         return "00:00";
     }
 
@@ -28,5 +39,15 @@ public class SimpleAverageRoute implements RouteTimeInterface {
             result = -1;
         }
         return result;
+    }
+
+    private String intToTime(int value) {
+        int minutes = value % 60;
+        int hours = (value - minutes) / 60;
+        String hourString = "00" + hours;
+        String minuteString = "00" + minutes;
+        return hourString.substring(hourString.length()-2)
+                + ":"
+                + minuteString.substring(minuteString.length()-2);
     }
 }
