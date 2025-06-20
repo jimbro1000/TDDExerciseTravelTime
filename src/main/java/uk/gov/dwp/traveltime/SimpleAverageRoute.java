@@ -8,7 +8,7 @@ public class SimpleAverageRoute implements RouteTimeInterface {
 
     @Override
     public String getAverage() {
-        return "";
+        return "00:00";
     }
 
     private int ingestTime(String time) {
