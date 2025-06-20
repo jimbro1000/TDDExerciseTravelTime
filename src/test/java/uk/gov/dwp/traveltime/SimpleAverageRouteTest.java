@@ -5,6 +5,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SimpleAverageRouteTest {
     public RouteTimeInterface averageRoute;
@@ -27,10 +28,10 @@ public class SimpleAverageRouteTest {
     }
 
     @Test
-    public void itReturnsZeroIfTheInputTimeIsValid() {
+    public void itReturnsAPositiveIfTheInputTimeIsValid() {
         averageRoute = new SimpleAverageRoute();
         int result = averageRoute.addSample("10:00");
-        assertEquals(0,result);
+        assertTrue(result >= 0);
     }
 
     @Test

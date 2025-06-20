@@ -13,13 +13,16 @@ public class SimpleAverageRoute implements RouteTimeInterface {
 
     private int ingestTime(String time) {
         String[] parts = time.split(":");
-        int result = 0;
+        int result;
         if (parts.length > 2 || parts.length == 0) {
             return -1;
         }
         try {
-            for (int i = 0; i < parts.length; ++i) {
-                Integer.parseInt(parts[i]);
+            if (parts.length == 2) {
+                result = Integer.parseInt(parts[1]);
+                result += Integer.parseInt(parts[0]) * 60;
+            } else {
+                result = Integer.parseInt(parts[0]);
             }
         } catch (NumberFormatException ex) {
             result = -1;
