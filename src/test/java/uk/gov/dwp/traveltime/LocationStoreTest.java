@@ -14,45 +14,51 @@ public class LocationStoreTest {
 
     @Test
     public void addLocationAddsEntryToLocationList() {
-        Set<String> sites = new HashSet<>();
-        Map<String, RouteStore> routes = new HashMap<>();
-        locations = new LocationStore(sites,routes);
+        Map<String, Map<String, RouteStore>> sites = new HashMap<>();
+        locations = new LocationStore(sites);
         locations.addLocation("testSite");
-        assertTrue(sites.contains("testSite"));
+        assertTrue(sites.containsKey("testSite"));
     }
 
     @Test
     public void addLocationReturnsZeroOnSuccess() {
-        Set<String> sites = new HashSet<>();
-        Map<String, RouteStore> routes = new HashMap<>();
-        locations = new LocationStore(sites,routes);
-
+        Map<String, Map<String, RouteStore>> sites = new HashMap<>();
+        locations = new LocationStore(sites);
         assertEquals(0,locations.addLocation("testSite"));
     }
 
     @Test
     public void addLocationReturnsNegativeOneOnFailure() {
-        Set<String> sites = new HashSet<>();
-        Map<String, RouteStore> routes = new HashMap<>();
-        locations = new LocationStore(sites,routes);
+        Map<String, Map<String, RouteStore>> sites = new HashMap<>();
+        locations = new LocationStore(sites);
 
         assertEquals(-1,locations.addLocation(null));
     }
 
     @Test
     public void hasLocationReturnsFalseIfLocationIsNotRecorded() {
-        Set<String> sites = new HashSet<>();
-        Map<String, RouteStore> routes = new HashMap<>();
-        locations = new LocationStore(sites,routes);
+        Map<String, Map<String, RouteStore>> sites = new HashMap<>();
+        locations = new LocationStore(sites);
         assertFalse(locations.hasLocation("Leeds"));
     }
 
     @Test
     public void hasLocationReturnsTrueIfLocationIsRecorded() {
-        Set<String> sites = new HashSet<>();
-        Map<String, RouteStore> routes = new HashMap<>();
-        sites.add("Blackpool");
-        locations = new LocationStore(sites,routes);
+        Map<String, Map<String, RouteStore>> sites = new HashMap<>();
+        sites.put("Blackpool", null);
+        locations = new LocationStore(sites);
         assertTrue(locations.hasLocation("Blackpool"));
+    }
+
+    @Test
+    public void addRouteIntroducesRouteAndTimeInformation() {
+        Map<String, Map<String, RouteStore>> sites = new HashMap<>();
+        locations = new LocationStore(sites);
+        locations.addRoute("London", "Paris", "03:20");
+        assertTrue(sites.containsKey("London"));
+        assertTrue(sites.containsKey("Paris"));
+        Map<String, RouteStore> destinations = sites.get("London");
+        RouteStore destination = destinations.get("Paris");
+        assertEquals("03:20",destination.getAverage());
     }
 }
