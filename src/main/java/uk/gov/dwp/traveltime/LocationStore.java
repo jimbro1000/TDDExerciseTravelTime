@@ -2,7 +2,6 @@ package uk.gov.dwp.traveltime;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class LocationStore implements LocationStoreInterface {
     private final Map<String, Map<String, RouteStore>> locations;

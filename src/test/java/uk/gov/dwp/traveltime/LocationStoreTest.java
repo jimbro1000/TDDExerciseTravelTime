@@ -3,9 +3,7 @@ package uk.gov.dwp.traveltime;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -50,6 +48,9 @@ public class LocationStoreTest {
         assertTrue(locations.hasLocation("Blackpool"));
     }
 
+    /**
+     * This test knows too much about the implementation, multiple layers deep
+     */
     @Test
     public void addRouteIntroducesRouteAndTimeInformation() {
         Map<String, Map<String, RouteStore>> sites = new HashMap<>();
