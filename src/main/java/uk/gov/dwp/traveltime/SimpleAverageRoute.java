@@ -7,7 +7,7 @@ public class SimpleAverageRoute implements RouteTimeInterface {
     @Override
     public int addSample(String elapsedTime) {
          int time = ingestTime(elapsedTime);
-         if (time < 0) return time;
+         if (time < 0) return -1;
          this.sampleSum += time;
          this.sampleCount++;
          return 0;
@@ -25,7 +25,7 @@ public class SimpleAverageRoute implements RouteTimeInterface {
     private int ingestTime(String time) {
         String[] parts = time.split(":");
         int result;
-        if (parts.length > 2 || parts.length == 0) {
+        if (parts.length > 2) {
             return -1;
         }
         try {

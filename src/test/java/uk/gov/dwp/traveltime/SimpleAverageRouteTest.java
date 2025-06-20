@@ -28,6 +28,13 @@ public class SimpleAverageRouteTest {
     }
 
     @Test
+    public void itReturnsMinusOneIfGivenATimeThatIncludesDays() {
+        averageRoute = new SimpleAverageRoute();
+        int result = averageRoute.addSample("02:14:30");
+        assertEquals(-1,result);
+    }
+
+    @Test
     public void itReturnsAPositiveIfTheInputTimeIsValid() {
         averageRoute = new SimpleAverageRoute();
         int result = averageRoute.addSample("10:00");
