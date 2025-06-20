@@ -4,11 +4,11 @@ import java.util.Map;
 import java.util.Set;
 
 public class LocationStore implements LocationStoreInterface {
-    private final Map<String, String> routes;
-    public final Set<String> locations;
+    private final Map<String, RouteStore> routes;
+    private final Set<String> locations;
 
     public LocationStore(final Set<String> locationRepository,
-                         final Map<String, String> routeRepository) {
+                         final Map<String, RouteStore> routeRepository) {
         this.locations = locationRepository;
         this.routes = routeRepository;
     }

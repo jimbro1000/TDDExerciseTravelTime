@@ -15,7 +15,7 @@ public class LocationStoreTest {
     @Test
     public void addLocationAddsEntryToLocationList() {
         Set<String> sites = new HashSet<>();
-        Map<String, String> routes = new HashMap<>();
+        Map<String, RouteStore> routes = new HashMap<>();
         locations = new LocationStore(sites,routes);
         locations.addLocation("testSite");
         assertTrue(sites.contains("testSite"));
@@ -24,7 +24,7 @@ public class LocationStoreTest {
     @Test
     public void addLocationReturnsZeroOnSuccess() {
         Set<String> sites = new HashSet<>();
-        Map<String, String> routes = new HashMap<>();
+        Map<String, RouteStore> routes = new HashMap<>();
         locations = new LocationStore(sites,routes);
 
         assertEquals(0,locations.addLocation("testSite"));
@@ -33,7 +33,7 @@ public class LocationStoreTest {
     @Test
     public void addLocationReturnsNegativeOneOnFailure() {
         Set<String> sites = new HashSet<>();
-        Map<String, String> routes = new HashMap<>();
+        Map<String, RouteStore> routes = new HashMap<>();
         locations = new LocationStore(sites,routes);
 
         assertEquals(-1,locations.addLocation(null));
@@ -42,7 +42,7 @@ public class LocationStoreTest {
     @Test
     public void hasLocationReturnsFalseIfLocationIsNotRecorded() {
         Set<String> sites = new HashSet<>();
-        Map<String, String> routes = new HashMap<>();
+        Map<String, RouteStore> routes = new HashMap<>();
         locations = new LocationStore(sites,routes);
         assertFalse(locations.hasLocation("Leeds"));
     }
@@ -50,7 +50,7 @@ public class LocationStoreTest {
     @Test
     public void hasLocationReturnsTrueIfLocationIsRecorded() {
         Set<String> sites = new HashSet<>();
-        Map<String, String> routes = new HashMap<>();
+        Map<String, RouteStore> routes = new HashMap<>();
         sites.add("Blackpool");
         locations = new LocationStore(sites,routes);
         assertTrue(locations.hasLocation("Blackpool"));
