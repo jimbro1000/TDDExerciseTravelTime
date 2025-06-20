@@ -42,7 +42,7 @@ public class SimpleAverageRouteTest {
 
     @ParameterizedTest
     @CsvSource(
-            value = {"04:00/04:00"},
+            value = {"04:00/04:00","02:00,03:00/02:30"},
             delimiter = '/'
     )
     public void getAverageReturnsTheSimpleMeanOfAllSamples(String sampleList, String expected) {
