@@ -72,14 +72,14 @@ public class TravelTimeCalculatorTest {
                     "Oxford,Manchester,false,true"
             }
     )
-    @DisplayName("Given one or both of the location pair is unknown, the travel time returned is 00:00")
+    @DisplayName("Given one or both of the location pair is unknown, the travel time returned is N/A")
     public void getTravelTimeReturnsEmptyTimeWhenOneLocationIsNotKnown(String from, String to, boolean fromKnown, boolean toKnown) {
         when(locationStore.hasLocation(from)).thenReturn(fromKnown);
         if (fromKnown) {
             when(locationStore.hasLocation(to)).thenReturn(toKnown);
         }
         String result = calculator.getTravelTime(from, to);
-        assertEquals("00:00", result);
+        assertEquals("N/A", result);
         verify(locationStore, times(1)).hasLocation(from);
         if (fromKnown) {
             verify(locationStore, times(1)).hasLocation(to);

@@ -18,11 +18,19 @@ public class LocationStoreTest {
 
     @Mock
     Map<String, Map<String, RouteStore>> mockSites;
+    @Mock
+    Map<String, RouteStore> mockRoute;
+    @Mock
+    RouteStore mockTime;
 
     @BeforeEach
     public void setup() {
         //noinspection unchecked
         reset(mockSites);
+        //noinspection unchecked
+        reset(mockRoute);
+        //noinspection unchecked
+        reset(mockTime);
     }
 
     @Test
@@ -63,7 +71,7 @@ public class LocationStoreTest {
         assertTrue(locations.hasLocation("Blackpool"));
     }
 
-    /**
+    /*
      * This test knows too much about the implementation, multiple layers deep
      */
     @Test
@@ -105,5 +113,49 @@ public class LocationStoreTest {
         locations.addRoute(fromSite, toSite, "03:20");
         verify(mockSites, times(1)).put(anyString(), any());
         verify(mockSites, times(0)).put(toSite, null);
+    }
+
+    /*
+     * Fragile Test - knows too much about implementation
+     */
+    @Test
+    public void getRouteTimeReturnsStoredAverageSampleTime() {
+        when(mockSites.containsKey("London")).thenReturn(true);
+        when(mockSites.containsKey("Oxford")).thenReturn(true);
+        when(mockSites.get("London")).thenReturn(mockRoute);
+        when(mockRoute.containsKey("Oxford")).thenReturn(true);
+        when(mockRoute.get("Oxford")).thenReturn(mockTime);
+        when(mockTime.getAverage()).thenReturn("01:10");
+        locations = new LocationStore(mockSites);
+        String result = locations.getRouteTime("London", "Oxford");
+        assertEquals("01:10", result);
+    }
+
+    @Test
+    public void getRouteTimeReturnsEmptyStringIfStartIsNotKnown() {
+        when(mockSites.containsKey("Banbury")).thenReturn(false);
+        locations = new LocationStore(mockSites);
+        String result = locations.getRouteTime("Banbury", "Oxford");
+        assertEquals("", result);
+    }
+
+    @Test
+    public void getRouteTimeReturnsEmptyStringIfTheDestinationIsNotKnown() {
+        when(mockSites.containsKey("Banbury")).thenReturn(true);
+        when(mockSites.containsKey("Oxford")).thenReturn(false);
+        locations = new LocationStore(mockSites);
+        String result = locations.getRouteTime("Banbury", "Oxford");
+        assertEquals("", result);
+    }
+
+    @Test
+    public void getRouteTimeReturnsEmptyStringIfStartAndDestinationDoNotHaveASampledRoute() {
+        when(mockSites.containsKey("London")).thenReturn(true);
+        when(mockSites.containsKey("Oxford")).thenReturn(true);
+        when(mockSites.get("London")).thenReturn(mockRoute);
+        when(mockRoute.containsKey("Oxford")).thenReturn(false);
+        locations = new LocationStore(mockSites);
+        String result = locations.getRouteTime("London", "Oxford");
+        assertEquals("", result);
     }
 }

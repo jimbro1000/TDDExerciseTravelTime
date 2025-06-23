@@ -48,7 +48,14 @@ public class LocationStore implements LocationStoreInterface {
     }
 
     @Override
-    public String getRouteTime(String from, String to) {
+    public String getRouteTime(final String from, final String to) {
+        if (this.locations.containsKey(from) && this.locations.containsKey(to)) {
+            Map<String, RouteStore> knownRoutes = this.locations.get(from);
+            if (knownRoutes.containsKey(to)) {
+                RouteStore route = knownRoutes.get(to);
+                return route.getAverage();
+            }
+        }
         return "";
     }
 }

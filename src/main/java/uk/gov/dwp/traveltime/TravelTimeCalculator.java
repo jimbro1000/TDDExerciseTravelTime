@@ -25,6 +25,6 @@ public class TravelTimeCalculator {
                 return this.locations.getRouteTime(fromLocation, toLocation);
             }
         }
-        return "00:00";
+        return "N/A";
     }
 }
