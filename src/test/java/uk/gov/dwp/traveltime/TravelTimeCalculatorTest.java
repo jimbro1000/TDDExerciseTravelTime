@@ -8,8 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class TravelTimeCalculatorTest {
@@ -21,6 +20,8 @@ public class TravelTimeCalculatorTest {
 
     @BeforeEach
     public void setup() {
+        //noinspection unchecked
+        reset(locationStore);
         calculator = new TravelTimeCalculator(locationStore);
     }
 
@@ -32,5 +33,17 @@ public class TravelTimeCalculatorTest {
         verify(locationStore, times(1)).addLocation("Manchester");
         verify(locationStore, times(1)).addLocation("Leeds");
         verify(locationStore, times(1)).addRoute("Manchester","Leeds","02:00");
+    }
+
+    @Test
+    @DisplayName("Given an existing pair of locations, a new average is calculated")
+    public void setTravelTimeRecalculatesAverageForExistingRoute() {
+        when(locationStore. hasLocation("Manchester")).thenReturn(true);
+        when(locationStore.hasLocation("Leeds")).thenReturn(true);
+        int result = calculator.setTravelTime("Manchester", "Leeds", "03:00");
+        assertEquals(0, result);
+        verify(locationStore, times(0)).addLocation("Manchester");
+        verify(locationStore, times(0)).addLocation("Leeds");
+        verify(locationStore, times(1)).addRoute("Manchester", "Leeds", "03:00");
     }
 }

@@ -9,8 +9,12 @@ public class TravelTimeCalculator {
     }
 
     public int setTravelTime(final String fromLocation, final String toLocation, final String travelTime) {
-        this.locations.addLocation(fromLocation);
-        this.locations.addLocation(toLocation);
+        if (!this.locations.hasLocation(fromLocation)) {
+            this.locations.addLocation(fromLocation);
+        }
+        if (!this.locations.hasLocation(toLocation)) {
+            this.locations.addLocation(toLocation);
+        }
         this.locations.addRoute(fromLocation,toLocation,travelTime);
         return 0;
     }
