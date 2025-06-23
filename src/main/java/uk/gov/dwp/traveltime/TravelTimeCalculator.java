@@ -18,4 +18,8 @@ public class TravelTimeCalculator {
         this.locations.addRoute(fromLocation,toLocation,travelTime);
         return 0;
     }
+
+    public String getTravelTime(String fromLocation, String toLocation) {
+        return null;
+    }
 }

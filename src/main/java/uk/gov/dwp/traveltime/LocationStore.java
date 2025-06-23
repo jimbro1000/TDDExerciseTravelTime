@@ -25,6 +25,11 @@ public class LocationStore implements LocationStoreInterface {
     }
 
     @Override
+    public String[] getLocations() {
+        return new String[0];
+    }
+
+    @Override
     public int addRoute(final String from, final String to, final String travelTime) {
         Map<String, RouteStore> routes;
         if (!locations.containsKey(from)) {
@@ -40,5 +45,10 @@ public class LocationStore implements LocationStoreInterface {
         RouteStore destination = routes.get(to);
         destination.setRouteTime(travelTime);
         return 0;
+    }
+
+    @Override
+    public String getRouteTime(String from, String to) {
+        return "";
     }
 }
