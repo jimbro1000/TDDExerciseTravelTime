@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -54,6 +56,33 @@ public class TravelTimeCalculatorTest {
         when(locationStore.hasLocation("Blackpool")).thenReturn(true);
         when(locationStore.getRouteTime("London","Blackpool")).thenReturn("03:21");
         String result = calculator.getTravelTime("London", "Blackpool");
-        assertEquals("03:00", result);
+        assertEquals("03:21", result);
+        verify(locationStore, times(1)).hasLocation("London");
+        verify(locationStore, times(1)).hasLocation("Blackpool");
+    }
+
+    /**
+     * Really awful mocking but Mockito forces this approach without using lenientMocking flag
+     */
+    @ParameterizedTest
+    @CsvSource(
+            {
+                    "London,Oxford,true,false",
+                    "Oxford,Banbury,false,false",
+                    "Oxford,Manchester,false,true"
+            }
+    )
+    @DisplayName("Given one or both of the location pair is unknown, the travel time returned is 00:00")
+    public void getTravelTimeReturnsEmptyTimeWhenOneLocationIsNotKnown(String from, String to, boolean fromKnown, boolean toKnown) {
+        when(locationStore.hasLocation(from)).thenReturn(fromKnown);
+        if (fromKnown) {
+            when(locationStore.hasLocation(to)).thenReturn(toKnown);
+        }
+        String result = calculator.getTravelTime(from, to);
+        assertEquals("00:00", result);
+        verify(locationStore, times(1)).hasLocation(from);
+        if (fromKnown) {
+            verify(locationStore, times(1)).hasLocation(to);
+        }
     }
 }

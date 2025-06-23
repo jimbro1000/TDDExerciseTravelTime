@@ -20,6 +20,11 @@ public class TravelTimeCalculator {
     }
 
     public String getTravelTime(String fromLocation, String toLocation) {
-        return null;
+        if (this.locations.hasLocation(fromLocation)){
+            if (this.locations.hasLocation(toLocation)) {
+                return this.locations.getRouteTime(fromLocation, toLocation);
+            }
+        }
+        return "00:00";
     }
 }
