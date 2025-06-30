@@ -2,10 +2,13 @@ package uk.gov.dwp.traveltime;
 
 public class TravelTimeCalculator {
 
-    private final LocationStore locations;
+    private final LocationStoreInterface locations;
+    private final RouteStoreInterface routes;
 
-    public TravelTimeCalculator(LocationStore store) {
-        this.locations = store;
+    public TravelTimeCalculator(final LocationStoreInterface locationStore,
+                                final RouteStoreInterface routeStore) {
+        this.locations = locationStore;
+        this.routes = routeStore;
     }
 
     public int setTravelTime(final String fromLocation, final String toLocation, final String travelTime) {
@@ -15,14 +18,16 @@ public class TravelTimeCalculator {
         if (!this.locations.hasLocation(toLocation)) {
             this.locations.addLocation(toLocation);
         }
-        this.locations.addRoute(fromLocation,toLocation,travelTime);
+        RouteInterface route = this.routes.addRoute(fromLocation,toLocation);
+        route.setRouteTime(travelTime);
         return 0;
     }
 
     public String getTravelTime(String fromLocation, String toLocation) {
         if (this.locations.hasLocation(fromLocation)){
             if (this.locations.hasLocation(toLocation)) {
-                return this.locations.getRouteTime(fromLocation, toLocation);
+                RouteInterface route = this.routes.getRoute(fromLocation, toLocation);
+                return route.getAverage();
             }
         }
         return "N/A";

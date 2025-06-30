@@ -1,12 +1,11 @@
 package uk.gov.dwp.traveltime;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class LocationStore implements LocationStoreInterface {
-    private final Map<String, Map<String, RouteStore>> locations;
+    private final List<String> locations;
 
-    public LocationStore(final Map<String, Map<String, RouteStore>> locationRepository) {
+    public LocationStore(final List<String> locationRepository) {
         this.locations = locationRepository;
     }
 
@@ -15,47 +14,17 @@ public class LocationStore implements LocationStoreInterface {
         if (locationName == null) {
             return -1;
         }
-        this.locations.put(locationName, null);
+        this.locations.add(locationName);
         return 0;
     }
 
     @Override
     public boolean hasLocation(final String LocationName) {
-        return locations.containsKey(LocationName);
+        return locations.contains(LocationName);
     }
 
     @Override
     public String[] getLocations() {
-        return new String[0];
-    }
-
-    @Override
-    public int addRoute(final String from, final String to, final String travelTime) {
-        Map<String, RouteStore> routes;
-        if (!locations.containsKey(from)) {
-            locations.put(from, new HashMap<>());
-        }
-        if (!locations.containsKey(to)) {
-            this.addLocation(to);
-        }
-        routes = locations.get(from);
-        if (!routes.containsKey(to)) {
-            routes.put(to, new RouteStore(to, new SimpleAverageRoute()));
-        }
-        RouteStore destination = routes.get(to);
-        destination.setRouteTime(travelTime);
-        return 0;
-    }
-
-    @Override
-    public String getRouteTime(final String from, final String to) {
-        if (this.locations.containsKey(from) && this.locations.containsKey(to)) {
-            Map<String, RouteStore> knownRoutes = this.locations.get(from);
-            if (knownRoutes.containsKey(to)) {
-                RouteStore route = knownRoutes.get(to);
-                return route.getAverage();
-            }
-        }
-        return "";
+        return locations.toArray(new String[0]);
     }
 }

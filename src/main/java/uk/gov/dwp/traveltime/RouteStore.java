@@ -1,27 +1,38 @@
 package uk.gov.dwp.traveltime;
 
-import java.util.Objects;
+import java.util.Map;
 
-public class RouteStore {
-    private final RouteTimeInterface routeSamples;
-    private final String destination;
+public class RouteStore implements RouteStoreInterface {
+    private final RouteBuilder routeBuilder;
+    private final Map<String,RouteInterface> routes;
 
-    public RouteStore(final String locationB, final RouteTimeInterface routeTimeCalculator) {
-        Objects.requireNonNull(routeTimeCalculator);
-        Objects.requireNonNull(locationB);
-        this.routeSamples = routeTimeCalculator;
-        this.destination = locationB;
+    public RouteStore(final Map<String,RouteInterface> routeContainer) {
+        this.routeBuilder = RouteBuilder.getRouteBuilder();
+        this.routeBuilder.setDefaultTimeCalculator(SimpleAverageRoute.class);
+        this.routes = routeContainer;
     }
 
-    public String getDestination() {
-        return this.destination;
+    /**
+     * @param from start of route
+     * @param to end of route
+     * @return route object for new or existing route
+     */
+    @Override
+    public RouteInterface addRoute(String from, String to) {
+        return routeBuilder.getNewRoute(from, to);
     }
 
-    public void setRouteTime(String elapsedTime) {
-        routeSamples.addSample(elapsedTime);
-    }
-
-    public String getAverage() {
-        return routeSamples.getAverage();
+    /**
+     * @param from start of route
+     * @param to end of route
+     * @return existing route object
+     */
+    @Override
+    public RouteInterface getRoute(String from, String to) {
+        String key = from + ":" + to;
+        if (routes.containsKey(key)) {
+            return routes.get(key);
+        }
+        return NullRoute.getInstance();
     }
 }

@@ -17,6 +17,10 @@ public class TravelTimeCalculatorTest {
 
     @Mock
     LocationStore locationStore;
+    @Mock
+    RouteStore routeStore;
+    @Mock
+    Route route;
 
     private TravelTimeCalculator calculator;
 
@@ -24,17 +28,19 @@ public class TravelTimeCalculatorTest {
     public void setup() {
         //noinspection unchecked
         reset(locationStore);
-        calculator = new TravelTimeCalculator(locationStore);
+        calculator = new TravelTimeCalculator(locationStore, routeStore);
     }
 
     @Test
     @DisplayName("Given a new pair of locations, set travel time adds them to the store")
     public void setTravelTimeAddsNewLocationDestinationPair() {
+        when(routeStore.addRoute("Manchester", "Leeds")).thenReturn(route);
         int result = calculator.setTravelTime("Manchester", "Leeds", "02:00");
         assertEquals(0, result);
         verify(locationStore, times(1)).addLocation("Manchester");
         verify(locationStore, times(1)).addLocation("Leeds");
-        verify(locationStore, times(1)).addRoute("Manchester","Leeds","02:00");
+        verify(routeStore, times(1)).addRoute("Manchester","Leeds");
+        verify(route, times(1)).setRouteTime("02:00");
     }
 
     @Test
@@ -42,11 +48,13 @@ public class TravelTimeCalculatorTest {
     public void setTravelTimeRecalculatesAverageForExistingRoute() {
         when(locationStore.hasLocation("Manchester")).thenReturn(true);
         when(locationStore.hasLocation("Leeds")).thenReturn(true);
+        when(routeStore.addRoute("Manchester", "Leeds")).thenReturn(route);
         int result = calculator.setTravelTime("Manchester", "Leeds", "03:00");
         assertEquals(0, result);
         verify(locationStore, times(0)).addLocation("Manchester");
         verify(locationStore, times(0)).addLocation("Leeds");
-        verify(locationStore, times(1)).addRoute("Manchester", "Leeds", "03:00");
+        verify(routeStore, times(1)).addRoute("Manchester", "Leeds");
+        verify(route).setRouteTime("03:00");
     }
 
     @Test
@@ -54,7 +62,8 @@ public class TravelTimeCalculatorTest {
     public void getTravelTimeReturnsAverageJourneyTime() {
         when(locationStore.hasLocation("London")).thenReturn(true);
         when(locationStore.hasLocation("Blackpool")).thenReturn(true);
-        when(locationStore.getRouteTime("London","Blackpool")).thenReturn("03:21");
+        when(routeStore.getRoute("London","Blackpool")).thenReturn(route);
+        when(route.getAverage()).thenReturn("03:21");
         String result = calculator.getTravelTime("London", "Blackpool");
         assertEquals("03:21", result);
         verify(locationStore, times(1)).hasLocation("London");
