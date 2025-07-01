@@ -34,10 +34,13 @@ public class SimpleAverageRouteTest {
         assertEquals(-1,result);
     }
 
-    @Test
-    public void itReturnsAPositiveIfTheInputTimeIsValid() {
+    @ParameterizedTest
+    @CsvSource(
+            {"1:00","01:00","10:00","10","01","0"}
+    )
+    public void itReturnsAPositiveIfTheInputTimeIsValid(final String sample) {
         averageRoute = new SimpleAverageRoute();
-        int result = averageRoute.addSample("10:00");
+        int result = averageRoute.addSample(sample);
         assertTrue(result >= 0);
     }
 

@@ -1,27 +1,19 @@
 package uk.gov.dwp.traveltime;
 
-import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NonNull;
 
+@AllArgsConstructor
 public class Route implements RouteInterface {
-    private final RouteTimeInterface routeSamples;
-    private final String destination;
+    @Getter
+    @NonNull
     private final String start;
-
-    public Route(final String locationA, final String locationB, final RouteTimeInterface routeTimeCalculator) {
-        Objects.requireNonNull(routeTimeCalculator);
-        Objects.requireNonNull(locationB);
-        this.routeSamples = routeTimeCalculator;
-        this.destination = locationB;
-        this.start = locationA;
-    }
-
-    public String getStart() {
-        return this.start;
-    }
-
-    public String getDestination() {
-        return this.destination;
-    }
+    @Getter
+    @NonNull
+    private final String destination;
+    @NonNull
+    private final RouteTimeInterface routeSamples;
 
     public void setRouteTime(String elapsedTime) {
         routeSamples.addSample(elapsedTime);

@@ -24,11 +24,9 @@ public class TravelTimeCalculator {
     }
 
     public String getTravelTime(String fromLocation, String toLocation) {
-        if (this.locations.hasLocation(fromLocation)){
-            if (this.locations.hasLocation(toLocation)) {
-                RouteInterface route = this.routes.getRoute(fromLocation, toLocation);
-                return route.getAverage();
-            }
+        if (this.locations.hasLocation(fromLocation) && this.locations.hasLocation(toLocation)) {
+            RouteInterface route = this.routes.getRoute(fromLocation, toLocation);
+            return route.getAverage();
         }
         return "N/A";
     }
