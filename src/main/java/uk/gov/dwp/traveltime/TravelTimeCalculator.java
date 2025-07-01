@@ -23,8 +23,9 @@ public class TravelTimeCalculator {
 
     /**
      * Set travel time for given route.
-     *
+     * <p>
      * Creates a new route and locations if any are not recorded
+     * </p>
      * @param fromLocation String start location
      * @param toLocation String end location
      * @param travelTime String elapsed travel time as HH:MM
@@ -40,6 +41,9 @@ public class TravelTimeCalculator {
             this.locations.addLocation(toLocation);
         }
         RouteInterface route = this.routes.addRoute(fromLocation, toLocation);
+        if (route instanceof NullRoute) {
+            return -1;
+        }
         route.setRouteTime(travelTime);
         return 0;
     }
