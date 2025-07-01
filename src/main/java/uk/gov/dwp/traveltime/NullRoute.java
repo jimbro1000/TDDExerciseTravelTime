@@ -1,11 +1,20 @@
 package uk.gov.dwp.traveltime;
 
 public final class NullRoute implements RouteInterface {
+    /**
+     * Unique instance handle for singleton.
+     */
     private static NullRoute instance;
 
     // hide default constructor
-    private NullRoute() {}
+    private NullRoute() {
+        // no action required
+    }
 
+    /**
+     * Obtain singleton instance.
+     * @return singleton NullRoute
+     */
     public static NullRoute getInstance() {
         if (instance == null) {
             instance = new NullRoute();
@@ -23,7 +32,7 @@ public final class NullRoute implements RouteInterface {
     /**
      * @param elapsedTime sample elapsed time for route
      */
-    public void setRouteTime(String elapsedTime) {
+    public void setRouteTime(final String elapsedTime) {
         // ignore sample
     }
 

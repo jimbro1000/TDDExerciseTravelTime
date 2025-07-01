@@ -2,11 +2,21 @@ package uk.gov.dwp.traveltime;
 
 import java.util.Map;
 
-public class RouteStore implements RouteStoreInterface {
+public final class RouteStore implements RouteStoreInterface {
+    /**
+     * Route builder instance.
+     */
     private final RouteBuilder routeBuilder;
-    private final Map<String,RouteInterface> routes;
+    /**
+     * Storage instance for routes.
+     */
+    private final Map<String, RouteInterface> routes;
 
-    public RouteStore(final Map<String,RouteInterface> routeContainer) {
+    /**
+     * Constructor.
+     * @param routeContainer storage instance (can be pre-populated)
+     */
+    public RouteStore(final Map<String, RouteInterface> routeContainer) {
         this.routeBuilder = RouteBuilder.getRouteBuilder();
         this.routeBuilder.setDefaultTimeCalculator(SimpleAverageRoute.class);
         this.routes = routeContainer;
@@ -18,7 +28,7 @@ public class RouteStore implements RouteStoreInterface {
      * @return route object for new or existing route
      */
     @Override
-    public RouteInterface addRoute(String from, String to) {
+    public RouteInterface addRoute(final String from, final String to) {
         return routeBuilder.getNewRoute(from, to);
     }
 
@@ -28,7 +38,7 @@ public class RouteStore implements RouteStoreInterface {
      * @return existing route object
      */
     @Override
-    public RouteInterface getRoute(String from, String to) {
+    public RouteInterface getRoute(final String from, final String to) {
         String key = from + ":" + to;
         if (routes.containsKey(key)) {
             return routes.get(key);
