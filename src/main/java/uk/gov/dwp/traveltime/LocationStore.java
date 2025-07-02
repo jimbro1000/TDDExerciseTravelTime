@@ -11,7 +11,11 @@ public final class LocationStore implements LocationStoreInterface {
      * Simple list of locations - could be a set instead.
      */
     private final List<String> locations;
-    private static final Logger logger = LoggerFactory.getLogger(LocationStore.class);
+    /**
+     * Logger instance.
+     */
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(LocationStore.class);
     /**
      * Constructor.
      * @param locationRepository inject storage object (can be prepopulated)
@@ -26,11 +30,11 @@ public final class LocationStore implements LocationStoreInterface {
         MDC.put("method", "addLocation");
         MDC.put("locationName", locationName);
         if (locationName == null) {
-            logger.warn("invalid location name provided");
+            LOGGER.warn("invalid location name provided");
             result = -1;
         } else {
             this.locations.add(locationName);
-            logger.info("location added to store");
+            LOGGER.info("location added to store");
         }
         MDC.remove("locationName");
         MDC.remove("method");
@@ -41,7 +45,7 @@ public final class LocationStore implements LocationStoreInterface {
     public boolean hasLocation(final String locationName) {
         MDC.put("method", "hasLocation");
         MDC.put("locationName", locationName);
-        logger.info("test for location in store");
+        LOGGER.info("test for location in store");
         MDC.remove("method");
         MDC.remove("locationName");
         return locations.contains(locationName);
@@ -50,7 +54,7 @@ public final class LocationStore implements LocationStoreInterface {
     @Override
     public String[] getLocations() {
         MDC.put("method", "getLocations");
-        logger.info("get all locations in store");
+        LOGGER.info("get all locations in store");
         MDC.remove("method");
         return locations.toArray(new String[0]);
     }
