@@ -1,5 +1,9 @@
 package uk.gov.dwp.traveltime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
 import java.lang.reflect.InvocationTargetException;
 
 public final class RouteBuilder {
@@ -11,6 +15,8 @@ public final class RouteBuilder {
      * Default elapsed time container class to use in each route instance.
      */
     private Class defaultTimeClass;
+
+    private static final Logger logger = LoggerFactory.getLogger(RouteBuilder.class);
 
     // Hide default constructor
     private RouteBuilder() {
@@ -24,6 +30,7 @@ public final class RouteBuilder {
     public static RouteBuilder getRouteBuilder() {
         if (instance == null) {
             instance = new RouteBuilder();
+            logger.info("RouteBuilder instantiated");
         }
         return instance;
     }
@@ -33,6 +40,9 @@ public final class RouteBuilder {
      * @param routeTimeClass class reference for RouteTimeInterface
      */
     public void setDefaultTimeCalculator(final Class routeTimeClass) {
+        MDC.put("routeTimeClass", routeTimeClass.getCanonicalName());
+        logger.info("Default RouteTimeInterface set");
+        MDC.remove("routeTimeClass");
         this.defaultTimeClass = routeTimeClass;
     }
 
@@ -44,17 +54,23 @@ public final class RouteBuilder {
      */
     public RouteInterface getNewRoute(final String from, final String to) {
         RouteTimeInterface timeType;
+        MDC.put("method", "getNewRoute");
+        logger.info("creating new route");
         try {
             timeType = (RouteTimeInterface) defaultTimeClass
                     .getDeclaredConstructor()
                     .newInstance();
+            logger.info("route created");
             return new Route(from, to, timeType);
         } catch (ClassCastException
                  | InvocationTargetException
                  | IllegalAccessException
                  | InstantiationException
                  | NoSuchMethodException e) {
+            logger.error("failed to create RouteTime instance");
             return NullRoute.getInstance();
+        } finally {
+            MDC.remove("method");
         }
     }
 }
