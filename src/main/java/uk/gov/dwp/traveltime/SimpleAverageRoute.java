@@ -1,5 +1,9 @@
 package uk.gov.dwp.traveltime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
 public final class SimpleAverageRoute implements RouteTimeInterface {
     /**
      * Minutes per hour for conversion and formatting.
@@ -13,6 +17,11 @@ public final class SimpleAverageRoute implements RouteTimeInterface {
      * Counter of samples provided.
      */
     private int sampleCount = 0;
+    /**
+     * Logger instance.
+     */
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(SimpleAverageRoute.class);
 
     /**
      * Add sample elapsed time to container.
@@ -21,13 +30,22 @@ public final class SimpleAverageRoute implements RouteTimeInterface {
      */
     @Override
     public int addSample(final String elapsedTime) {
-         int time = ingestTime(elapsedTime);
+        int result = 0;
+        MDC.put("method", "addSample");
+        LOGGER.info("add sample to route elapsed time history");
+        int time = ingestTime(elapsedTime);
          if (time < 0) {
-             return -1;
+             LOGGER.warn("invalid time format submitted {}", elapsedTime);
+             result = -1;
+         } else {
+             this.sampleSum += time;
+             this.sampleCount++;
+             MDC.put("samples", String.valueOf(this.sampleCount));
+             LOGGER.info("elapsed time sample accepted");
+             MDC.remove("samples");
          }
-         this.sampleSum += time;
-         this.sampleCount++;
-         return 0;
+         MDC.remove("method");
+         return result;
     }
 
     /**
@@ -36,11 +54,15 @@ public final class SimpleAverageRoute implements RouteTimeInterface {
      */
     @Override
     public String getAverage() {
+        String result = "00:00";
+        MDC.put("method", "getAverage");
+        LOGGER.info("get mean average of elapsed time samples for route");
         if (sampleCount > 0) {
             int average = sampleSum / sampleCount;
-            return intToTime(average);
+            result = intToTime(average);
         }
-        return "00:00";
+        MDC.remove("method");
+        return result;
     }
 
     private int ingestTime(final String time) {
