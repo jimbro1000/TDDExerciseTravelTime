@@ -7,7 +7,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RouteStoreTest {
 
@@ -18,6 +18,22 @@ public class RouteStoreTest {
         RouteInterface route = routes.addRoute("Manchester", "Blackpool");
         assertEquals("Manchester", route.getStart());
         assertEquals("Blackpool", route.getDestination());
+        assertTrue(routeContainer.containsKey("Manchester:Blackpool"));
+    }
+
+    @Test
+    public void routeStoreReturnsTrueIfRouteIsKnown() {
+        Map<String,RouteInterface> routeContainer = new HashMap<>();
+        routeContainer.put("Leeds:Manchester", NullRoute.getInstance());
+        RouteStore routes = new RouteStore(routeContainer);
+        assertTrue(routes.hasRoute("Leeds", "Manchester"));
+    }
+
+    @Test
+    public void routeStoreReturnsFalseIfRouteIsUnknown() {
+        Map<String,RouteInterface> routeContainer = new HashMap<>();
+        RouteStore routes = new RouteStore(routeContainer);
+        assertFalse(routes.hasRoute("Leeds", "Manchester"));
     }
 
     @ParameterizedTest

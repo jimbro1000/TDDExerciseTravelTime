@@ -41,8 +41,11 @@ public final class RouteStore implements RouteStoreInterface {
     public RouteInterface addRoute(final String from, final String to) {
         MDC.put("method", "addRoute");
         LOGGER.info("add route to store");
+        RouteInterface route = routeBuilder.getNewRoute(from, to);
+        String key = from + ":" + to;
+        routes.put(key, route);
         MDC.remove("method");
-        return routeBuilder.getNewRoute(from, to);
+        return route;
     }
 
     /**
@@ -63,6 +66,25 @@ public final class RouteStore implements RouteStoreInterface {
             LOGGER.info("key not found");
         }
         MDC.remove("method");
+        return result;
+    }
+
+    /**
+     * Test if route exists in store.
+     *
+     * @param from String start location
+     * @param to   String end location
+     * @return true if route is known, otherwise false
+     */
+    @Override
+    public boolean hasRoute(final String from, final String to) {
+        boolean result;
+        String key = from + ":" + to;
+        MDC.put("method", "hasRoute");
+        MDC.put("route key", key);
+        result = routes.containsKey(key);
+        MDC.remove("method");
+        MDC.remove("key");
         return result;
     }
 }

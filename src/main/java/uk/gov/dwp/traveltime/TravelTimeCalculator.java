@@ -57,7 +57,12 @@ public class TravelTimeCalculator {
         if (!this.locations.hasLocation(toLocation)) {
             this.locations.addLocation(toLocation);
         }
-        RouteInterface route = this.routes.addRoute(fromLocation, toLocation);
+        RouteInterface route;
+        if (this.routes.hasRoute(fromLocation, toLocation)) {
+            route = this.routes.getRoute(fromLocation, toLocation);
+        } else {
+            route = this.routes.addRoute(fromLocation, toLocation);
+        }
         if (route instanceof NullRoute) {
             LOGGER.info("failed to acquire route");
             result = -1;

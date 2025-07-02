@@ -16,4 +16,12 @@ public interface RouteStoreInterface {
      * @return identified route instance or NullRoute
      */
     RouteInterface getRoute(String from, String to);
+
+    /**
+     * Test if route exists in store.
+     * @param from String start location
+     * @param to String end location
+     * @return true if route is known, otherwise false
+     */
+    boolean hasRoute(String from, String to);
 }
