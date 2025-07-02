@@ -1,5 +1,9 @@
 package uk.gov.dwp.traveltime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
 import java.util.Map;
 
 public final class RouteStore implements RouteStoreInterface {
@@ -11,15 +15,21 @@ public final class RouteStore implements RouteStoreInterface {
      * Storage instance for routes.
      */
     private final Map<String, RouteInterface> routes;
-
+    /**
+     * Logger instance.
+     */
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(RouteStore.class);
     /**
      * Constructor.
      * @param routeContainer storage instance (can be pre-populated)
      */
     public RouteStore(final Map<String, RouteInterface> routeContainer) {
+        LOGGER.info("Created simple in-memory route store");
         this.routeBuilder = RouteBuilder.getRouteBuilder();
         this.routeBuilder.setDefaultTimeCalculator(SimpleAverageRoute.class);
         this.routes = routeContainer;
+        LOGGER.info("Initial container size is {}", this.routes.size());
     }
 
     /**
@@ -29,6 +39,9 @@ public final class RouteStore implements RouteStoreInterface {
      */
     @Override
     public RouteInterface addRoute(final String from, final String to) {
+        MDC.put("method", "addRoute");
+        LOGGER.info("add route to store");
+        MDC.remove("method");
         return routeBuilder.getNewRoute(from, to);
     }
 
@@ -40,9 +53,16 @@ public final class RouteStore implements RouteStoreInterface {
     @Override
     public RouteInterface getRoute(final String from, final String to) {
         String key = from + ":" + to;
+        RouteInterface result = NullRoute.getInstance();
+        MDC.put("method", "getRoute");
+        MDC.put("route key", key);
         if (routes.containsKey(key)) {
-            return routes.get(key);
+            result = routes.get(key);
+            LOGGER.info("retrieved route from store");
+        } else {
+            LOGGER.info("key not found");
         }
-        return NullRoute.getInstance();
+        MDC.remove("method");
+        return result;
     }
 }
