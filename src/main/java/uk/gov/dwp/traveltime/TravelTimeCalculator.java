@@ -1,6 +1,13 @@
 package uk.gov.dwp.traveltime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
+import java.util.UUID;
+
 public class TravelTimeCalculator {
+    public static final String LOG_DETAIL_FORMAT = "{\"detail\":\"{}\",\"from\":\"{}\",\"to\":\"{}\"}";
     /**
      * Location store.
      */
@@ -9,6 +16,8 @@ public class TravelTimeCalculator {
      * Route store.
      */
     private final RouteStoreInterface routes;
+
+    private static final Logger logger = LoggerFactory.getLogger(TravelTimeCalculator.class);
 
     /**
      * Constructor.
@@ -34,6 +43,11 @@ public class TravelTimeCalculator {
     public int setTravelTime(final String fromLocation,
                              final String toLocation,
                              final String travelTime) {
+        MDC.put("correlationId", raiseCorrelationId().toString());
+        MDC.put("method", "setTravelTime");
+        MDC.put("from",fromLocation);
+        MDC.put("to",toLocation);
+        logger.info("add elapsed time sample to route");
         if (!this.locations.hasLocation(fromLocation)) {
             this.locations.addLocation(fromLocation);
         }
@@ -42,9 +56,12 @@ public class TravelTimeCalculator {
         }
         RouteInterface route = this.routes.addRoute(fromLocation, toLocation);
         if (route instanceof NullRoute) {
+            logger.info("failed to acquire route");
+            MDC.clear();
             return -1;
         }
         route.setRouteTime(travelTime);
+        MDC.clear();
         return 0;
     }
 
@@ -56,12 +73,26 @@ public class TravelTimeCalculator {
      */
     public String getTravelTime(final String fromLocation,
                                 final String toLocation) {
+        MDC.put("correlationId", raiseCorrelationId().toString());
+        MDC.put("method", "getTravelTime");
+        MDC.put("from",fromLocation);
+        MDC.put("to",toLocation);
+        logger.info(LOG_DETAIL_FORMAT,
+                "obtain average travel time for route", fromLocation, toLocation);
         if (this.locations.hasLocation(fromLocation)
                 && this.locations.hasLocation(toLocation)) {
             RouteInterface route = this.routes
                     .getRoute(fromLocation, toLocation);
+            logger.info("average time found");
+            MDC.clear();
             return route.getAverage();
         }
+        logger.info("unknown route");
+        MDC.clear();
         return "N/A";
+    }
+
+    private UUID raiseCorrelationId() {
+        return UUID.randomUUID();
     }
 }
