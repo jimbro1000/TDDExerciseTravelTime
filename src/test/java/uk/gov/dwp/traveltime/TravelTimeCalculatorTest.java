@@ -94,4 +94,12 @@ public class TravelTimeCalculatorTest {
             verify(locationStore, times(1)).hasLocation(to);
         }
     }
+
+    @DisplayName("When setting route time and the route selection fails setTravelTime responds gracefully")
+    @Test
+    public void setTravelTimeReturnsMinusOneIfRouteIsNull() {
+        when(locationStore.hasLocation(anyString())).thenReturn(true);
+        when(routeStore.addRoute(anyString(),anyString())).thenReturn(NullRoute.getInstance());
+        assertEquals(-1, calculator.setTravelTime("Glasgow","Lands End", "00:00"));
+    }
 }

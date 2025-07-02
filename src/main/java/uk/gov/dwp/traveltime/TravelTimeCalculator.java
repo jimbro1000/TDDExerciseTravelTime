@@ -45,6 +45,7 @@ public class TravelTimeCalculator {
     public int setTravelTime(final String fromLocation,
                              final String toLocation,
                              final String travelTime) {
+        int result = 0;
         MDC.put("correlationId", raiseCorrelationId().toString());
         MDC.put("method", "setTravelTime");
         MDC.put("from", fromLocation);
@@ -59,12 +60,12 @@ public class TravelTimeCalculator {
         RouteInterface route = this.routes.addRoute(fromLocation, toLocation);
         if (route instanceof NullRoute) {
             LOGGER.info("failed to acquire route");
-            MDC.clear();
-            return -1;
+            result = -1;
+        } else {
+            route.setRouteTime(travelTime);
         }
-        route.setRouteTime(travelTime);
         MDC.clear();
-        return 0;
+        return result;
     }
 
     /**
